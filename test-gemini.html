@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+        .loading {
+            display: none;
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+        .success {
+            color: green;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gemini API Test</h1>
+    
+    <div>
+        <h2>Test Direct API Call</h2>
+        <button id="testDirect">Test Direct API Call</button>
+        <div class="loading" id="loadingDirect">Loading...</div>
+        <div class="error" id="errorDirect"></div>
+        <div class="success" id="successDirect"></div>
+        <pre id="resultDirect" class="result"></pre>
+    </div>
+    
+    <div style="margin-top: 40px;">
+        <h2>Test SDK API Call</h2>
+        <button id="testSDK">Test SDK API Call</button>
+        <div class="loading" id="loadingSDK">Loading...</div>
+        <div class="error" id="errorSDK"></div>
+        <div class="success" id="successSDK"></div>
+        <pre id="resultSDK" class="result"></pre>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@google/generative-ai@0.1.3/dist/index.min.js"></script>
+    <script>
+        // API Key
+        const GEMINI_API_KEY = 'AIzaSyAqDIBlCDBJ7M_npYvBrO2W_-XhjVNnajo';
+        
+        // Test direct API call
+        document.getElementById('testDirect').addEventListener('click', async () => {
+            const loadingEl = document.getElementById('loadingDirect');
+            const errorEl = document.getElementById('errorDirect');
+            const successEl = document.getElementById('successDirect');
+            const resultEl = document.getElementById('resultDirect');
+            
+            loadingEl.style.display = 'block';
+            errorEl.textContent = '';
+            successEl.textContent = '';
+            resultEl.textContent = '';
+            
+            try {
+                const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: "Hello, please respond with a simple greeting."
+                            }]
+                        }]
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error?.message || 'Unknown error');
+                }
+                
+                loadingEl.style.display = 'none';
+                successEl.textContent = 'Direct API call successful!';
+                resultEl.textContent = JSON.stringify(data, null, 2);
+                
+            } catch (error) {
+                loadingEl.style.display = 'none';
+                errorEl.textContent = `Error: ${error.message}`;
+                console.error('Direct API error:', error);
+            }
+        });
+        
+        // Test SDK API call
+        document.getElementById('testSDK').addEventListener('click', async () => {
+            const loadingEl = document.getElementById('loadingSDK');
+            const errorEl = document.getElementById('errorSDK');
+            const successEl = document.getElementById('successSDK');
+            const resultEl = document.getElementById('resultSDK');
+            
+            loadingEl.style.display = 'block';
+            errorEl.textContent = '';
+            successEl.textContent = '';
+            resultEl.textContent = '';
+            
+            try {
+                // Check if SDK is available
+                if (typeof GoogleGenerativeAI === 'undefined') {
+                    throw new Error('Google Generative AI SDK not found');
+                }
+                
+                // Initialize the SDK
+                const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+                const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+                
+                // Generate content
+                const result = await model.generateContent("Hello, please respond with a simple greeting.");
+                const response = await result.response;
+                const text = response.text();
+                
+                loadingEl.style.display = 'none';
+                successEl.textContent = 'SDK API call successful!';
+                resultEl.textContent = text;
+                
+            } catch (error) {
+                loadingEl.style.display = 'none';
+                errorEl.textContent = `Error: ${error.message}`;
+                console.error('SDK API error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

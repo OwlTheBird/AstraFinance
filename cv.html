@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astra Financial - CV Submission</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="background.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="animated-background">
+        <div class="animated-shape shape1"></div>
+        <div class="animated-shape shape2"></div>
+        <div class="animated-shape shape3"></div>
+        <div class="animated-shape shape4"></div>
+    </div>
+    <header>
+        <div class="logo">
+            <img src="logo-simple.svg" alt="Astra Financial Logo">
+            <span class="logo-text">Astra Financial</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="expense.html">Expense</a></li>
+                <li><a href="cv.html" class="active">CV</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="cv-hero">
+            <div class="cv-hero-content">
+                <h1>CV Submission</h1>
+                <p>Prepare your journey to professional success</p>
+            </div>
+        </section>
+
+        <section class="cv-section">
+            <div class="cv-tabs">
+                <button class="tab-button active" onclick="showTab('submit-cv')">Submit Your CV</button>
+                <button class="tab-button" onclick="showTab('browse-cvs')">Browse CVs</button>
+            </div>
+
+            <div id="submit-cv" class="tab-content active">
+                <h2>Submit Your CV</h2>
+                <div id="auth-required-cv" class="auth-required-message" style="display: none;">
+                    <p>Please <a href="login.html">login</a> to submit your CV.</p>
+                </div>
+                <form id="cv-form" class="cv-form">
+                    <div class="form-group">
+                        <label for="full-name">Full Name:</label>
+                        <input type="text" id="full-name" name="full-name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="age">Age:</label>
+                        <input type="number" id="age" name="age" min="18" max="100" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone:</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cv-type">CV Type:</label>
+                        <select id="cv-type" name="cv-type" required>
+                            <option value="">Select CV Type</option>
+                            <option value="financial-consultant">Financial Consultant</option>
+                            <option value="innovator">Innovator</option>
+                            <option value="fresh-graduate">Fresh Graduate</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="success-group" style="display: none;">
+                        <label for="previous-success">Previous Success:</label>
+                        <textarea id="previous-success" name="previous-success" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="skills">Skills (comma separated):</label>
+                        <input type="text" id="skills" name="skills" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <textarea id="description" name="description" rows="6" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cv-file">Upload CV (PDF):</label>
+                        <input type="file" id="cv-file" name="cv-file" accept=".pdf">
+                    </div>
+                    
+                    <button type="submit" class="select-btn">Submit CV</button>
+                </form>
+                
+                <!-- AI CV Analysis Section -->
+                <div class="ai-cv-analysis" id="ai-cv-analysis">
+                    <h3>AI CV Analysis</h3>
+                    <p>Get AI-powered feedback on your CV to make it stand out.</p>
+                    <div class="form-group">
+                        <label for="target-role">Target Role:</label>
+                        <input type="text" id="target-role" name="target-role" placeholder="e.g., Financial Analyst">
+                    </div>
+                    <button id="analyze-cv-btn" class="select-btn">Analyze My CV</button>
+                    <div id="cv-analysis-loading" style="display: none;">
+                        <p><i class="fas fa-spinner fa-spin"></i> Analyzing your CV...</p>
+                    </div>
+                    <div id="cv-analysis-results" class="ai-results">
+                        <!-- Results will be displayed here -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="browse-cvs" class="tab-content">
+                <h2>Browse CVs</h2>
+                
+                <div class="filter-options">
+                    <div class="filter-group">
+                        <label for="filter-type">Filter by Type:</label>
+                        <select id="filter-type">
+                            <option value="all">All</option>
+                            <option value="financial-consultant">Financial Consultant</option>
+                            <option value="innovator">Innovator</option>
+                            <option value="fresh-graduate">Fresh Graduate</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-skills">Filter by Skills:</label>
+                        <input type="text" id="filter-skills" placeholder="Enter skills...">
+                    </div>
+                    
+                    <button class="btn-secondary" onclick="applyFilters()">Apply Filters</button>
+                </div>
+                
+                <div class="cv-list">
+                    <!-- Sample CVs for demonstration -->
+                    <div class="cv-card financial-consultant">
+                        <div class="cv-header">
+                            <h3>John Smith</h3>
+                            <div class="cv-tags">
+                                <span class="tag tag-consultant">Financial Consultant</span>
+                            </div>
+                        </div>
+                        <div class="cv-body">
+                            <p class="cv-age">Age: 35</p>
+                            <p class="cv-skills"><strong>Skills:</strong> Financial Analysis, Investment Planning, Tax Optimization</p>
+                            <p class="cv-description">Experienced financial consultant with over 10 years in the industry. Specializes in wealth management and retirement planning.</p>
+                        </div>
+                        <div class="cv-footer">
+                            <button class="btn-secondary">View Full Profile</button>
+                            <button class="btn-contact"><i class="fas fa-envelope"></i> Contact</button>
+                        </div>
+                    </div>
+                    
+                    <div class="cv-card innovator">
+                        <div class="cv-header">
+                            <h3>Sarah Johnson</h3>
+                            <div class="cv-tags">
+                                <span class="tag tag-innovator">Innovator</span>
+                                <span class="tag tag-success">Previous Success</span>
+                            </div>
+                        </div>
+                        <div class="cv-body">
+                            <p class="cv-age">Age: 28</p>
+                            <p class="cv-skills"><strong>Skills:</strong> FinTech, Blockchain, AI Implementation</p>
+                            <p class="cv-description">Innovative entrepreneur with a successful track record in developing financial technology solutions. Founded a successful FinTech startup that was acquired in 2023.</p>
+                        </div>
+                        <div class="cv-footer">
+                            <button class="btn-secondary">View Full Profile</button>
+                            <button class="btn-contact"><i class="fas fa-envelope"></i> Contact</button>
+                        </div>
+                    </div>
+                    
+                    <div class="cv-card fresh-graduate">
+                        <div class="cv-header">
+                            <h3>Michael Lee</h3>
+                            <div class="cv-tags">
+                                <span class="tag tag-graduate">Fresh Graduate</span>
+                            </div>
+                        </div>
+                        <div class="cv-body">
+                            <p class="cv-age">Age: 23</p>
+                            <p class="cv-skills"><strong>Skills:</strong> Financial Modeling, Data Analysis, Excel</p>
+                            <p class="cv-description">Recent finance graduate with a strong foundation in financial principles and analytical skills. Eager to apply academic knowledge in a professional setting.</p>
+                        </div>
+                        <div class="cv-footer">
+                            <button class="btn-secondary">View Full Profile</button>
+                            <button class="btn-contact"><i class="fas fa-envelope"></i> Contact</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="logo-simple.svg" alt="Astra Financial Logo">
+                <p>Astra Financial</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="expense.html">Expense</a></li>
+                    <li><a href="cv.html">CV</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>Contact Us</h4>
+                <p><i class="fas fa-envelope"></i> info@astrafinancial.com</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Astra Financial. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="notification" class="notification">
+        <div class="notification-content">
+            <i class="fas fa-exclamation-circle"></i>
+            <p id="notification-message"></p>
+            <button id="close-notification"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="ai-service-fixed.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

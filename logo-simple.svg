@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <!-- Background shape -->
+  <rect x="5" y="5" width="50" height="50" rx="10" fill="#10A37F" />
+  
+  <!-- Star symbol -->
+  <path d="M30 15 L34 25 L44 25 L36 32 L39 42 L30 35 L21 42 L24 32 L16 25 L26 25 Z" fill="#ffffff" />
+  
+  <!-- Text - Astra Financial -->
+  <text x="65" y="35" font-family="Arial, sans-serif" font-weight="700" font-size="20" fill="#10A37F">ASTRA FINANCIAL</text>
+</svg>
