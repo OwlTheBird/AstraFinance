@@ -107,4 +107,38 @@ async function getTaxDeductions(userId) {
     }
 }
 
-export { supabase, submitCV, getAllCVs, getCVsWithFilters, saveTaxDeduction, getTaxDeductions };
+// Save expense data
+async function saveExpense(expenseData) {
+    try {
+        const { data, error } = await supabase
+            .from('expenses')
+            .insert([expenseData]);
+            
+        if (error) throw error;
+        
+        return { success: true, data };
+    } catch (error) {
+        console.error('Error saving expense to Supabase:', error);
+        return { success: false, error: error.message || 'Failed to save expense' };
+    }
+}
+
+// Get expenses for a user
+async function getExpenses(userId) {
+    try {
+        const { data, error } = await supabase
+            .from('expenses')
+            .select('*')
+            .eq('user_id', userId)
+            .order('date', { ascending: false });
+            
+        if (error) throw error;
+        
+        return { success: true, data };
+    } catch (error) {
+        console.error('Error fetching expenses from Supabase:', error);
+        return { success: false, error: error.message || 'Failed to fetch expenses' };
+    }
+}
+
+export { supabase, submitCV, getAllCVs, getCVsWithFilters, saveTaxDeduction, getTaxDeductions, saveExpense, getExpenses };

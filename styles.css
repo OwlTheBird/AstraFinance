@@ -593,6 +593,46 @@ table th {
     color: #fff;
 }
 
+/* Save Expenses Button and Status */
+.save-expenses-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#save-expenses-btn {
+    background-color: #4a6fa5;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+#save-expenses-btn:hover {
+    background-color: #3a5a8f;
+}
+
+#save-expenses-status {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    display: none;
+}
+
+#save-expenses-status .success {
+    color: #28a745;
+}
+
+#save-expenses-status .warning {
+    color: #ffc107;
+}
+
+#save-expenses-status .error {
+    color: #dc3545;
+}
+
 /* CV Section */
 .cv-section {
     padding: 4rem 2rem;

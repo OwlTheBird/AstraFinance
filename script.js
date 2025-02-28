@@ -665,6 +665,94 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
+        
+        // Save Expenses to Supabase
+        const saveExpensesBtn = document.getElementById('save-expenses-btn');
+        if (saveExpensesBtn) {
+            saveExpensesBtn.addEventListener('click', async function() {
+                if (!isLoggedIn) {
+                    showNotification('Please login to use this feature.', true);
+                    return;
+                }
+                
+                // Get expenses from localStorage
+                const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+                
+                if (transactions.length === 0) {
+                    showNotification('No expenses to save.', true);
+                    return;
+                }
+                
+                // Show saving status
+                const saveStatus = document.getElementById('save-expenses-status');
+                saveStatus.innerHTML = '<p>Saving expenses to database...</p>';
+                saveStatus.style.display = 'block';
+                
+                try {
+                    const userId = localStorage.getItem('userEmail');
+                    
+                    // Import the saveExpense function from supabase-client.js
+                    import('./supabase-client.js').then(async (module) => {
+                        let successCount = 0;
+                        let errorCount = 0;
+                        
+                        // Save each expense to Supabase
+                        for (const transaction of transactions) {
+                            const expenseData = {
+                                user_id: userId,
+                                date: transaction.date,
+                                amount: transaction.amount,
+                                category: transaction.category,
+                                description: transaction.description
+                            };
+                            
+                            const result = await module.saveExpense(expenseData);
+                            if (result.success) {
+                                successCount++;
+                            } else {
+                                errorCount++;
+                                console.error('Failed to save expense:', result.error);
+                            }
+                        }
+                        
+                        // Update status
+                        if (errorCount === 0) {
+                            saveStatus.innerHTML = `<p class="success">Successfully saved ${successCount} expenses to the database.</p>`;
+                            showNotification(`Successfully saved ${successCount} expenses to the database.`);
+                        } else {
+                            saveStatus.innerHTML = `<p class="warning">Saved ${successCount} expenses, but failed to save ${errorCount} expenses.</p>`;
+                            showNotification(`Saved ${successCount} expenses, but failed to save ${errorCount} expenses.`, true);
+                        }
+                        
+                        // Clear local storage after successful save
+                        if (successCount > 0) {
+                            // Keep only the expenses that failed to save
+                            if (errorCount > 0) {
+                                const failedTransactions = transactions.slice(-errorCount);
+                                localStorage.setItem('transactions', JSON.stringify(failedTransactions));
+                                // Refresh the expense table
+                                document.getElementById('expenses-body').innerHTML = '';
+                                failedTransactions.forEach(addTransactionToTable);
+                                updateExpenseTotals();
+                            } else {
+                                localStorage.removeItem('transactions');
+                                // Clear the expense table
+                                document.getElementById('expenses-body').innerHTML = '';
+                                updateExpenseTotals();
+                            }
+                        }
+                    }).catch(error => {
+                        console.error('Error importing supabase-client.js:', error);
+                        saveStatus.innerHTML = `<p class="error">Error: ${error.message || 'Failed to save expenses'}</p>`;
+                        showNotification('Failed to save expenses to the database.', true);
+                    });
+                } catch (error) {
+                    console.error('Error saving expenses:', error);
+                    saveStatus.innerHTML = `<p class="error">Error: ${error.message || 'Failed to save expenses'}</p>`;
+                    showNotification('Failed to save expenses to the database.', true);
+                }
+            });
+        }
     }
     
     // CV Submission
@@ -1209,24 +1297,58 @@ async function fetchCVsFromSupabase(filters = {}) {
 
 // Load Transactions
 async function loadTransactions() {
-    try {
-        const transactions = await API.Expense.getTransactions();
-        
-        // Clear existing transactions
-        const tbody = document.getElementById('expenses-body');
-        tbody.innerHTML = '';
-        
-        // Add transactions to table
-        transactions.forEach(transaction => {
-            if (transaction.type === 'expense') {
-                addTransactionToTable(transaction);
+    // Get transactions from localStorage
+    const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    
+    // Clear existing transactions
+    document.getElementById('expenses-body').innerHTML = '';
+    
+    // Add each transaction to the table
+    transactions.forEach(addTransactionToTable);
+    
+    // Update totals
+    updateExpenseTotals();
+    
+    // If user is logged in, also load transactions from Supabase
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const userId = localStorage.getItem('userEmail');
+    
+    if (isLoggedIn && userId) {
+        // Import the getExpenses function from supabase-client.js
+        import('./supabase-client.js').then(async (module) => {
+            try {
+                const result = await module.getExpenses(userId);
+                if (result.success && result.data && result.data.length > 0) {
+                    // Show notification
+                    showNotification(`Loaded ${result.data.length} expenses from the database.`);
+                    
+                    // Add a heading to separate database expenses
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td colspan="4" class="expense-separator">Expenses from Database</td>`;
+                    document.getElementById('expenses-body').appendChild(tr);
+                    
+                    // Add each expense to the table
+                    result.data.forEach(expense => {
+                        const transaction = {
+                            id: expense.id,
+                            date: expense.date,
+                            amount: expense.amount,
+                            category: expense.category,
+                            description: expense.description,
+                            fromDatabase: true
+                        };
+                        addTransactionToTable(transaction);
+                    });
+                    
+                    // Update totals
+                    updateExpenseTotals();
+                }
+            } catch (error) {
+                console.error('Error loading expenses from Supabase:', error);
             }
+        }).catch(error => {
+            console.error('Error importing supabase-client.js:', error);
         });
-        
-        // Update totals
-        updateExpenseTotals();
-    } catch (error) {
-        console.error('Error loading transactions:', error);
     }
 }
 
