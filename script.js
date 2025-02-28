@@ -313,6 +313,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 const income = parseFloat(document.getElementById('annual-income').value);
                 const deductions = parseFloat(document.getElementById('deductions').value) || 0;
+                const deductionReason = document.getElementById('deduction-reason').value;
                 const socialSecurity = parseFloat(document.getElementById('social-security').value) || 0;
                 const taxCredits = parseFloat(document.getElementById('tax-credits').value) || 0;
                 
@@ -355,6 +356,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Show result (using EGP currency)
                 showNotification(`Your estimated annual tax is: ${finalTax.toFixed(2)} EGP`);
+                
+                // Save tax deduction data to Supabase
+                try {
+                    const userId = localStorage.getItem('userEmail');
+                    if (userId) {
+                        const deductionData = {
+                            user_id: userId,
+                            deduction_name: deductionReason,
+                            deduction_amount: deductions,
+                            annual_income: income,
+                            social_security_contributions: socialSecurity,
+                            calculation_date: new Date().toISOString(),
+                            tax_amount: finalTax
+                        };
+                        
+                        // Import the saveTaxDeduction function from supabase-client.js
+                        import('./supabase-client.js').then(async (module) => {
+                            const result = await module.saveTaxDeduction(deductionData);
+                            if (result.success) {
+                                console.log('Tax deduction data saved successfully:', result.data);
+                            } else {
+                                console.error('Failed to save tax deduction data:', result.error);
+                            }
+                        }).catch(error => {
+                            console.error('Error importing supabase-client.js:', error);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error saving tax deduction data:', error);
+                }
                 
                 // Show AI tax optimization section
                 const aiTaxOptimization = document.getElementById('ai-tax-optimization');
@@ -419,10 +450,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 const monthlyIncome = parseFloat(document.getElementById('monthly-income').value);
+                const monthlyDeductions = parseFloat(document.getElementById('monthly-deductions').value) || 0;
+                const monthlyDeductionReason = document.getElementById('monthly-deduction-reason').value;
                 const monthlySocialSecurity = parseFloat(document.getElementById('monthly-social-security').value) || 0;
                 
                 // Convert monthly income and deductions to annual for tax calculation
                 const annualIncome = monthlyIncome * 12;
+                const annualDeductions = monthlyDeductions * 12;
                 const annualSocialSecurity = monthlySocialSecurity * 12;
                 
                 // Egyptian tax calculation based on 2024 tax brackets
@@ -430,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const personalAllowance = 20000;
                 
                 // Calculate taxable income after personal allowance and social security
-                const taxableIncome = Math.max(0, annualIncome - annualSocialSecurity - personalAllowance);
+                const taxableIncome = Math.max(0, annualIncome - annualDeductions - annualSocialSecurity - personalAllowance);
                 
                 // Progressive tax calculation based on Egyptian tax brackets
                 let annualTax = 0;
@@ -463,6 +497,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Show result (using EGP currency)
                 showNotification(`Your estimated monthly tax is: ${monthlyTax.toFixed(2)} EGP`);
+                
+                // Save tax deduction data to Supabase
+                try {
+                    const userId = localStorage.getItem('userEmail');
+                    if (userId) {
+                        const deductionData = {
+                            user_id: userId,
+                            deduction_name: monthlyDeductionReason,
+                            deduction_amount: monthlyDeductions,
+                            annual_income: annualIncome,
+                            social_security_contributions: annualSocialSecurity,
+                            calculation_date: new Date().toISOString(),
+                            tax_amount: annualTax,
+                            is_monthly: true
+                        };
+                        
+                        // Import the saveTaxDeduction function from supabase-client.js
+                        import('./supabase-client.js').then(async (module) => {
+                            const result = await module.saveTaxDeduction(deductionData);
+                            if (result.success) {
+                                console.log('Monthly tax deduction data saved successfully:', result.data);
+                            } else {
+                                console.error('Failed to save monthly tax deduction data:', result.error);
+                            }
+                        }).catch(error => {
+                            console.error('Error importing supabase-client.js:', error);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error saving monthly tax deduction data:', error);
+                }
             });
         }
         

@@ -2,8 +2,8 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 // Supabase configuration
-const SUPABASE_URL = "https://oqfsqjkseksfftquoged.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xZnNxamtzZWtzZmZ0cXVvZ2VkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0MDY4OTI4NCwiZXhwIjoyMDU2MjY1Mjg0fQ.oCflgsG6mtj9_p-EffwcjydfaZKG2whXo3HS6KI9nBM";
+const SUPABASE_URL = "https://your-supabase-url.supabase.co";  // Replace with your Supabase URL
+const SUPABASE_KEY = "your-supabase-key";  // Replace with your Supabase API key
 
 // Initialize Supabase client
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -74,4 +74,37 @@ async function getCVsWithFilters(filters = {}) {
     }
 }
 
-export { supabase, submitCV, getAllCVs, getCVsWithFilters };
+// Save tax deduction data
+async function saveTaxDeduction(deductionData) {
+    try {
+        const { data, error } = await supabase
+            .from('tax_deduction')
+            .insert([deductionData]);
+            
+        if (error) throw error;
+        
+        return { success: true, data };
+    } catch (error) {
+        console.error('Error saving tax deduction to Supabase:', error);
+        return { success: false, error: error.message || 'Failed to save tax deduction' };
+    }
+}
+
+// Get tax deductions for a user
+async function getTaxDeductions(userId) {
+    try {
+        const { data, error } = await supabase
+            .from('tax_deduction')
+            .select('*')
+            .eq('user_id', userId);
+            
+        if (error) throw error;
+        
+        return { success: true, data };
+    } catch (error) {
+        console.error('Error fetching tax deductions from Supabase:', error);
+        return { success: false, error: error.message || 'Failed to fetch tax deductions' };
+    }
+}
+
+export { supabase, submitCV, getAllCVs, getCVsWithFilters, saveTaxDeduction, getTaxDeductions };
