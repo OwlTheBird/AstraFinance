@@ -1785,7 +1785,7 @@ if (saveAnnualTaxBtn) {
                     const result = await module.saveTaxDeduction(deductionData);
                     if (result.success) {
                         console.log('Annual tax deduction data saved successfully:', result.data);
-                        showNotification('Annual tax data saved successfully to the database.');
+                        showNotification('Data has been sent to records.');
                     } else {
                         console.error('Failed to save annual tax deduction data:', result.error);
                         showNotification('Failed to save annual tax data to the database.', true);
@@ -1839,7 +1839,7 @@ if (saveMonthlyTaxBtn) {
                     const result = await module.saveTaxDeduction(deductionData);
                     if (result.success) {
                         console.log('Monthly tax deduction data saved successfully:', result.data);
-                        showNotification('Monthly tax data saved successfully to the database.');
+                        showNotification('Data has been sent to records.');
                     } else {
                         console.error('Failed to save monthly tax deduction data:', result.error);
                         showNotification('Failed to save monthly tax data to the database.', true);
