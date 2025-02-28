@@ -105,7 +105,10 @@
                         <label for="tax-credits">Tax Credits (EGP):</label>
                         <input type="number" id="tax-credits" name="tax-credits" placeholder="0">
                     </div>
-                    <button type="submit" class="btn">Calculate Taxes</button>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn">Calculate Taxes</button>
+                        <button type="button" id="save-annual-tax-btn" class="btn btn-save">Save Tax Data</button>
+                    </div>
                 </form>
                 <div class="tax-info">
                     <p><strong>Note:</strong> This calculator uses the 2024 Egyptian tax brackets:</p>
@@ -153,7 +156,10 @@
                         <label for="monthly-social-security">Monthly Social Security (EGP):</label>
                         <input type="number" id="monthly-social-security" name="monthly-social-security" placeholder="0">
                     </div>
-                    <button type="submit" class="btn">Calculate Taxes</button>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn">Calculate Taxes</button>
+                        <button type="button" id="save-monthly-tax-btn" class="btn btn-save">Save Tax Data</button>
+                    </div>
                 </form>
                 <div class="tax-info">
                     <p><strong>Note:</strong> Monthly tax is calculated based on the annual tax brackets, divided by 12.</p>

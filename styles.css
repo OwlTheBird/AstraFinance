@@ -543,6 +543,21 @@ nav ul li a.active {
     resize: vertical;
 }
 
+/* Form Buttons */
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn-save {
+    background-color: #28a745;
+}
+
+.btn-save:hover {
+    background-color: #218838;
+}
+
 /* Expense Tracker */
 .expense-summary {
     display: grid;

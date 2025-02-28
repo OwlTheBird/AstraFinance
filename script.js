@@ -357,6 +357,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Show result (using EGP currency)
                 showNotification(`Your estimated annual tax is: ${finalTax.toFixed(2)} EGP`);
                 
+                // Store the tax calculation data in a global variable for the save button
+                window.annualTaxData = {
+                    income: income,
+                    deductions: deductions,
+                    deductionReason: deductionReason,
+                    socialSecurity: socialSecurity,
+                    taxCredits: taxCredits,
+                    taxAmount: finalTax,
+                    calculationDate: new Date().toISOString()
+                };
+                
                 // Save tax deduction data to Supabase
                 try {
                     const userId = localStorage.getItem('userEmail');
@@ -497,6 +508,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Show result (using EGP currency)
                 showNotification(`Your estimated monthly tax is: ${monthlyTax.toFixed(2)} EGP`);
+                
+                // Store the tax calculation data in a global variable for the save button
+                window.monthlyTaxData = {
+                    monthlyIncome: monthlyIncome,
+                    monthlyDeductions: monthlyDeductions,
+                    deductionReason: monthlyDeductionReason,
+                    monthlySocialSecurity: monthlySocialSecurity,
+                    annualIncome: annualIncome,
+                    annualDeductions: annualDeductions,
+                    annualSocialSecurity: annualSocialSecurity,
+                    taxAmount: annualTax,
+                    monthlyTaxAmount: monthlyTax,
+                    calculationDate: new Date().toISOString(),
+                    isMonthly: true
+                };
                 
                 // Save tax deduction data to Supabase
                 try {
@@ -1725,3 +1751,107 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize other components
     // ...
 });
+
+// Save Annual Tax Data
+const saveAnnualTaxBtn = document.getElementById('save-annual-tax-btn');
+if (saveAnnualTaxBtn) {
+    saveAnnualTaxBtn.addEventListener('click', async function() {
+        if (!isLoggedIn) {
+            showNotification('Please login to use this feature.', true);
+            return;
+        }
+        
+        if (!window.annualTaxData) {
+            showNotification('Please calculate taxes first before saving.', true);
+            return;
+        }
+        
+        try {
+            const userId = localStorage.getItem('userEmail');
+            if (userId) {
+                const deductionData = {
+                    user_id: userId,
+                    deduction_name: window.annualTaxData.deductionReason,
+                    deduction_amount: window.annualTaxData.deductions,
+                    annual_income: window.annualTaxData.income,
+                    social_security_contributions: window.annualTaxData.socialSecurity,
+                    tax_credits: window.annualTaxData.taxCredits,
+                    calculation_date: window.annualTaxData.calculationDate,
+                    tax_amount: window.annualTaxData.taxAmount
+                };
+                
+                // Import the saveTaxDeduction function from supabase-client.js
+                import('./supabase-client.js').then(async (module) => {
+                    const result = await module.saveTaxDeduction(deductionData);
+                    if (result.success) {
+                        console.log('Annual tax deduction data saved successfully:', result.data);
+                        showNotification('Annual tax data saved successfully to the database.');
+                    } else {
+                        console.error('Failed to save annual tax deduction data:', result.error);
+                        showNotification('Failed to save annual tax data to the database.', true);
+                    }
+                }).catch(error => {
+                    console.error('Error importing supabase-client.js:', error);
+                    showNotification('Error saving annual tax data: ' + error.message, true);
+                });
+            }
+        } catch (error) {
+            console.error('Error saving annual tax deduction data:', error);
+            showNotification('Error saving annual tax data: ' + error.message, true);
+        }
+    });
+}
+
+// Save Monthly Tax Data
+const saveMonthlyTaxBtn = document.getElementById('save-monthly-tax-btn');
+if (saveMonthlyTaxBtn) {
+    saveMonthlyTaxBtn.addEventListener('click', async function() {
+        if (!isLoggedIn) {
+            showNotification('Please login to use this feature.', true);
+            return;
+        }
+        
+        if (!window.monthlyTaxData) {
+            showNotification('Please calculate taxes first before saving.', true);
+            return;
+        }
+        
+        try {
+            const userId = localStorage.getItem('userEmail');
+            if (userId) {
+                const deductionData = {
+                    user_id: userId,
+                    deduction_name: window.monthlyTaxData.deductionReason,
+                    deduction_amount: window.monthlyTaxData.annualDeductions,
+                    annual_income: window.monthlyTaxData.annualIncome,
+                    social_security_contributions: window.monthlyTaxData.annualSocialSecurity,
+                    calculation_date: window.monthlyTaxData.calculationDate,
+                    tax_amount: window.monthlyTaxData.taxAmount,
+                    is_monthly: true,
+                    monthly_income: window.monthlyTaxData.monthlyIncome,
+                    monthly_deduction: window.monthlyTaxData.monthlyDeductions,
+                    monthly_social_security: window.monthlyTaxData.monthlySocialSecurity,
+                    monthly_tax_amount: window.monthlyTaxData.monthlyTaxAmount
+                };
+                
+                // Import the saveTaxDeduction function from supabase-client.js
+                import('./supabase-client.js').then(async (module) => {
+                    const result = await module.saveTaxDeduction(deductionData);
+                    if (result.success) {
+                        console.log('Monthly tax deduction data saved successfully:', result.data);
+                        showNotification('Monthly tax data saved successfully to the database.');
+                    } else {
+                        console.error('Failed to save monthly tax deduction data:', result.error);
+                        showNotification('Failed to save monthly tax data to the database.', true);
+                    }
+                }).catch(error => {
+                    console.error('Error importing supabase-client.js:', error);
+                    showNotification('Error saving monthly tax data: ' + error.message, true);
+                });
+            }
+        } catch (error) {
+            console.error('Error saving monthly tax deduction data:', error);
+            showNotification('Error saving monthly tax data: ' + error.message, true);
+        }
+    });
+}
