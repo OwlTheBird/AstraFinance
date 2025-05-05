@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini API Models List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+        .loading {
+            display: none;
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+        .success {
+            color: green;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gemini API Models List</h1>
+    
+    <button id="listModels">List Available Models</button>
+    <div class="loading" id="loading">Loading...</div>
+    <div class="error" id="error"></div>
+    <div class="success" id="success"></div>
+    <pre id="result" class="result"></pre>
+    
+    <script>
+        // API Key
+        const GEMINI_API_KEY = 'AIzaSyAqDIBlCDBJ7M_npYvBrO2W_-XhjVNnajo';
+        
+        // List models
+        document.getElementById('listModels').addEventListener('click', async () => {
+            const loadingEl = document.getElementById('loading');
+            const errorEl = document.getElementById('error');
+            const successEl = document.getElementById('success');
+            const resultEl = document.getElementById('result');
+            
+            loadingEl.style.display = 'block';
+            errorEl.textContent = '';
+            successEl.textContent = '';
+            resultEl.textContent = '';
+            
+            try {
+                // Try v1 endpoint
+                const apiUrl = `https://generativelanguage.googleapis.com/v1/models?key=${GEMINI_API_KEY}`;
+                
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error?.message || 'Unknown error');
+                }
+                
+                loadingEl.style.display = 'none';
+                successEl.textContent = 'Models retrieved successfully!';
+                resultEl.textContent = JSON.stringify(data, null, 2);
+                
+            } catch (error) {
+                loadingEl.style.display = 'none';
+                errorEl.textContent = `Error: ${error.message}`;
+                console.error('API error:', error);
+                
+                // Try v1beta as fallback
+                try {
+                    const apiBetaUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${GEMINI_API_KEY}`;
+                    
+                    const betaResponse = await fetch(apiBetaUrl);
+                    const betaData = await betaResponse.json();
+                    
+                    if (!betaResponse.ok) {
+                        throw new Error(betaData.error?.message || 'Unknown error');
+                    }
+                    
+                    errorEl.textContent += ' (Trying v1beta as fallback)';
+                    successEl.textContent = 'Models retrieved successfully from v1beta!';
+                    resultEl.textContent = JSON.stringify(betaData, null, 2);
+                } catch (betaError) {
+                    errorEl.textContent += ` Fallback also failed: ${betaError.message}`;
+                    console.error('API beta error:', betaError);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

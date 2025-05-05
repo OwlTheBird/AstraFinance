@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astra Financial - Expense Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="background.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="animated-background">
+        <div class="animated-shape shape1"></div>
+        <div class="animated-shape shape2"></div>
+        <div class="animated-shape shape3"></div>
+        <div class="animated-shape shape4"></div>
+    </div>
+    <header>
+        <div class="logo">
+            <img src="logo-simple.svg" alt="Astra Financial Logo">
+            <span class="logo-text">Astra Financial</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="expense.html" class="active">Expense</a></li>
+                <li><a href="cv.html">CV</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="expense-hero">
+            <div class="expense-hero-content">
+                <h1>Expense Management</h1>
+                <p>Take control of your finances with our powerful tools</p>
+            </div>
+        </section>
+
+        <section class="expense-options">
+            <div class="expense-grid">
+                <div class="expense-card" id="annual-taxes">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>Annual Taxes</h3>
+                    <p>Calculate your yearly tax obligations with our AI-powered system.</p>
+                    <button class="select-btn" onclick="showTaxForm('annual')">Select</button>
+                </div>
+                <div class="expense-card" id="monthly-taxes">
+                    <i class="fas fa-calendar"></i>
+                    <h3>Monthly Taxes</h3>
+                    <p>Calculate your monthly tax obligations and plan your budget accordingly.</p>
+                    <button class="select-btn" onclick="showTaxForm('monthly')">Select</button>
+                </div>
+            </div>
+
+            <!-- Monthly Income Form (Initially Hidden) -->
+            <div class="income-form" id="monthly-income-form" style="display: none;">
+                <h3>Enter Your Monthly Income</h3>
+                <div id="auth-required-income" class="auth-required-message" style="display: none;">
+                    <p>Please <a href="login.html">login</a> to use the income calculator.</p>
+                </div>
+                <form id="income-form">
+                    <div class="form-group">
+                        <label for="income">Monthly Income:</label>
+                        <input type="number" id="income" name="income" required>
+                    </div>
+                    <button type="submit" class="btn">Calculate</button>
+                </form>
+            </div>
+
+            <!-- Annual Tax Form (Initially Hidden) -->
+            <div class="tax-form" id="annual-tax-form" style="display: none;">
+                <h3>Egyptian Annual Tax Calculator</h3>
+                <div id="auth-required-tax" class="auth-required-message" style="display: none;">
+                    <p>Please <a href="login.html">login</a> to use the tax calculator.</p>
+                </div>
+                <form id="annual-form">
+                    <div class="form-group">
+                        <label for="annual-income">Annual Income (EGP):</label>
+                        <input type="number" id="annual-income" name="annual-income" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deductions">Deductions (EGP):</label>
+                        <input type="number" id="deductions" name="deductions" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="social-security">Social Security Contributions (EGP):</label>
+                        <input type="number" id="social-security" name="social-security" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="tax-credits">Tax Credits (EGP):</label>
+                        <input type="number" id="tax-credits" name="tax-credits" placeholder="0">
+                    </div>
+                    <button type="submit" class="btn">Calculate Taxes</button>
+                </form>
+                <div class="tax-info">
+                    <p><strong>Note:</strong> This calculator uses the 2024 Egyptian tax brackets:</p>
+                    <ul>
+                        <li>Personal allowance: 20,000 EGP (exempt for everyone)</li>
+                        <li>First 40,000 EGP (after personal allowance): 0%</li>
+                        <li>40,001 to 55,000 EGP: 10%</li>
+                        <li>55,001 to 70,000 EGP: 15%</li>
+                        <li>70,001 to 200,000 EGP: 20%</li>
+                        <li>200,001 to 400,000 EGP: 22.5%</li>
+                        <li>400,001 to 1,200,000 EGP: 25%</li>
+                        <li>Above 1,200,000 EGP: 27.5%</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Monthly Tax Form (Initially Hidden) -->
+            <div class="tax-form" id="monthly-tax-form" style="display: none;">
+                <h3>Egyptian Monthly Tax Calculator</h3>
+                <div id="auth-required-tax" class="auth-required-message" style="display: none;">
+                    <p>Please <a href="login.html">login</a> to use the tax calculator.</p>
+                </div>
+                <form id="monthly-form">
+                    <div class="form-group">
+                        <label for="monthly-income">Monthly Income (EGP):</label>
+                        <input type="number" id="monthly-income" name="monthly-income" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="monthly-social-security">Monthly Social Security (EGP):</label>
+                        <input type="number" id="monthly-social-security" name="monthly-social-security" placeholder="0">
+                    </div>
+                    <button type="submit" class="btn">Calculate Taxes</button>
+                </form>
+                <div class="tax-info">
+                    <p><strong>Note:</strong> Monthly tax is calculated based on the annual tax brackets, divided by 12.</p>
+                </div>
+            </div>
+
+            <!-- Expense Tracker (Initially Hidden) -->
+            <div class="expense-tracker" id="expense-tracker" style="display: none;">
+                <h3>Expense Tracker</h3>
+                <div id="auth-required-expense" class="auth-required-message" style="display: none;">
+                    <p>Please <a href="login.html">login</a> to use the expense tracker.</p>
+                </div>
+                <div class="expense-summary">
+                    <div class="summary-item">
+                        <h4>Monthly Income</h4>
+                        <p id="tracker-income">$0.00</p>
+                    </div>
+                    <div class="summary-item">
+                        <h4>Spent</h4>
+                        <p id="tracker-spent">$0.00</p>
+                    </div>
+                    <div class="summary-item">
+                        <h4>Remaining</h4>
+                        <p id="tracker-remaining">$0.00</p>
+                    </div>
+                </div>
+
+                <div class="add-expense">
+                    <h4>Add New Expense</h4>
+                    <form id="add-expense-form">
+                        <div class="form-group">
+                            <label for="expense-amount">Amount:</label>
+                            <input type="number" id="expense-amount" name="expense-amount" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expense-category">Category:</label>
+                            <select id="expense-category" name="expense-category" required>
+                                <option value="">Select a category</option>
+                                <option value="groceries">Groceries</option>
+                                <option value="technology">Technology</option>
+                                <option value="utilities">Utilities</option>
+                                <option value="entertainment">Entertainment</option>
+                                <option value="transportation">Transportation</option>
+                                <option value="healthcare">Healthcare</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="expense-description">Description:</label>
+                            <input type="text" id="expense-description" name="expense-description">
+                        </div>
+                        <button type="submit" class="btn">Add Expense</button>
+                    </form>
+                </div>
+
+                <div class="expense-list">
+                    <h4>Recent Expenses</h4>
+                    <table id="expenses-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expenses-body">
+                            <!-- Expenses will be added here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Bill Reminders (Initially Hidden) -->
+            <div class="bill-reminders" id="bill-reminders" style="display: none;">
+                <h3>Bill Reminders</h3>
+                <div id="auth-required-bill" class="auth-required-message" style="display: none;">
+                    <p>Please <a href="login.html">login</a> to use the bill reminders.</p>
+                </div>
+                <div class="add-reminder">
+                    <h4>Add New Reminder</h4>
+                    <form id="add-reminder-form">
+                        <div class="form-group">
+                            <label for="reminder-title">Bill Title:</label>
+                            <input type="text" id="reminder-title" name="reminder-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reminder-amount">Amount:</label>
+                            <input type="number" id="reminder-amount" name="reminder-amount" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reminder-date">Due Date:</label>
+                            <input type="date" id="reminder-date" name="reminder-date" required>
+                        </div>
+                        <button type="submit" class="btn">Add Reminder</button>
+                    </form>
+                </div>
+
+                <div class="reminder-list">
+                    <h4>Upcoming Bills</h4>
+                    <table id="reminders-table">
+                        <thead>
+                            <tr>
+                                <th>Bill</th>
+                                <th>Amount</th>
+                                <th>Due Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reminders-body">
+                            <!-- Reminders will be added here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- AI Tax Optimization Section -->
+            <div class="ai-tax-optimization" id="ai-tax-optimization" style="display: none;">
+                <h3>AI Tax Optimization</h3>
+                <p>Get personalized tax optimization suggestions based on your financial data.</p>
+                <div id="tax-optimization-loading" style="display: none;">
+                    <p><i class="fas fa-spinner fa-spin"></i> Analyzing your tax situation...</p>
+                </div>
+                <div id="tax-optimization-results" class="ai-results">
+                    <!-- Results will be displayed here -->
+                </div>
+            </div>
+            
+            <!-- AI Expense Analysis Section -->
+            <div class="ai-expense-analysis" id="ai-expense-analysis" style="display: none;">
+                <h3>AI Expense Analysis</h3>
+                <p>Get AI-powered insights about your spending patterns and saving opportunities.</p>
+                <button id="analyze-expenses-btn" class="btn">Analyze My Expenses</button>
+                <div id="expense-analysis-loading" style="display: none;">
+                    <p><i class="fas fa-spinner fa-spin"></i> Analyzing your expenses...</p>
+                </div>
+                <div id="expense-analysis-results" class="ai-results">
+                    <!-- Results will be displayed here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="logo-simple.svg" alt="Astra Financial Logo">
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="expense.html">Expense</a></li>
+                    <li><a href="cv.html">CV</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>Contact Us</h4>
+                <p><i class="fas fa-envelope"></i> info@astrafinancial.com</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Astra Financial. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="notification" class="notification">
+        <div class="notification-content">
+            <i class="fas fa-exclamation-circle"></i>
+            <p id="notification-message"></p>
+            <button id="close-notification"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="ai-service-fixed.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astra Financial - Home</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="background.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="animated-background">
+        <div class="animated-shape shape1"></div>
+        <div class="animated-shape shape2"></div>
+        <div class="animated-shape shape3"></div>
+        <div class="animated-shape shape4"></div>
+    </div>
+    <header>
+        <div class="logo">
+            <img src="logo-simple.svg" alt="Astra Financial Logo">
+            <span class="logo-text">Astra Financial</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="expense.html">Expense</a></li>
+                <li><a href="cv.html">CV</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Welcome to Astra Financial</h1>
+                <p>Your journey to financial success starts here</p>
+                <a href="#services" class="btn">Explore Our Services</a>
+            </div>
+            <div class="floating-icons">
+                <div class="floating-icon floating"><i class="fas fa-chart-line"></i></div>
+                <div class="floating-icon floating-slow"><i class="fas fa-wallet"></i></div>
+                <div class="floating-icon floating-fast"><i class="fas fa-coins"></i></div>
+                <div class="floating-icon floating"><i class="fas fa-file-invoice-dollar"></i></div>
+            </div>
+        </section>
+
+        <section id="services" class="services">
+            <h2>Our Services</h2>
+            <div class="service-grid">
+                <div class="service-card">
+                    <i class="fas fa-calculator"></i>
+                    <h3>AI Expense Calculator</h3>
+                    <p>Calculate your annual taxes with our AI-powered system. Get accurate estimates and maximize your returns.</p>
+                    <a href="expense.html" class="btn-secondary">Learn More</a>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-file-alt"></i>
+                    <h3>CV Submission</h3>
+                    <p>Post your CV or innovative ideas. Connect with financial consultants and showcase your previous successes.</p>
+                    <a href="cv.html" class="btn-secondary">Submit CV</a>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Expense Tracker</h3>
+                    <p>Track your transactions and categorize them automatically. Monitor spending on groceries, technology, and more.</p>
+                    <a href="expense.html" class="btn-secondary">Track Expenses</a>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-bell"></i>
+                    <h3>Bill Reminders</h3>
+                    <p>Get notifications when you have 30% of your monthly income left. Receive daily reports on your remaining budget.</p>
+                    <a href="expense.html" class="btn-secondary">Set Reminders</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta">
+            <h2>Ready to Take Control of Your Finances?</h2>
+            <p>Join thousands of users who have improved their financial health with Astra Financial.</p>
+            <a href="#" class="btn">Get Started Today</a>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="logo-simple.svg" alt="Astra Financial Logo">
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="expense.html">Expense</a></li>
+                    <li><a href="cv.html">CV</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>Contact Us</h4>
+                <p><i class="fas fa-envelope"></i> info@astrafinancial.com</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Astra Financial. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="notification" class="notification">
+        <div class="notification-content">
+            <i class="fas fa-exclamation-circle"></i>
+            <p id="notification-message"></p>
+            <button id="close-notification"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="ai-service-fixed.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

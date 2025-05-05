@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Convert SVG to PNG</title>
+    <script>
+        window.onload = function() {
+            // Load the SVG
+            const img = document.createElement('img');
+            img.src = 'logo.svg';
+            img.onload = function() {
+                // Create canvas
+                const canvas = document.createElement('canvas');
+                canvas.width = 240;
+                canvas.height = 80;
+                const ctx = canvas.getContext('2d');
+                
+                // Draw SVG to canvas
+                ctx.drawImage(img, 0, 0);
+                
+                // Convert to PNG
+                const pngDataUrl = canvas.toDataURL('image/png');
+                
+                // Display the PNG
+                document.getElementById('png-output').src = pngDataUrl;
+                document.getElementById('png-data').textContent = pngDataUrl;
+            };
+        };
+    </script>
+</head>
+<body>
+    <h1>SVG to PNG Converter</h1>
+    <div>
+        <h2>Original SVG:</h2>
+        <img src="logo.svg" width="240" height="80">
+    </div>
+    <div>
+        <h2>Converted PNG:</h2>
+        <img id="png-output" width="240" height="80">
+    </div>
+    <div>
+        <h2>PNG Data URL:</h2>
+        <textarea id="png-data" style="width: 100%; height: 200px;"></textarea>
+    </div>
+</body>
+</html>

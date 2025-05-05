@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Tax Deduction Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            min-height: 200px;
+            white-space: pre-wrap;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Tax Deduction Table</h1>
+    <p>This page tests the tax_deduction table in your Supabase database.</p>
+    
+    <div class="form-group">
+        <label for="user-email">User Email:</label>
+        <input type="email" id="user-email" value="test@example.com">
+    </div>
+    
+    <button id="createTableBtn">1. Create/Check Tax Table</button>
+    <button id="insertTestBtn">2. Insert Test Record</button>
+    <button id="viewRecordsBtn">3. View Records</button>
+    <button id="clearButton">Clear Output</button>
+    
+    <div id="output">Results will appear here...</div>
+    
+    <script type="module">
+        // Import the necessary modules
+        import { createTaxDeductionTable } from './create-tax-table.js';
+        import { saveTaxDeduction, getTaxDeductions } from './supabase-client.js';
+        
+        // Override console methods to output to our div
+        const outputDiv = document.getElementById('output');
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            outputDiv.innerHTML += args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg
+            ).join(' ') + '<br>';
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            outputDiv.innerHTML += '<span style="color: red;">' + 
+                args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg).join(' ') + 
+                '</span><br>';
+        };
+        
+        // Button event listeners
+        document.getElementById('createTableBtn').addEventListener('click', async () => {
+            outputDiv.innerHTML = 'Creating/checking tax_deduction table...<br>';
+            try {
+                const result = await createTaxDeductionTable();
+                console.log('Table creation/check result:', result);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+        
+        document.getElementById('insertTestBtn').addEventListener('click', async () => {
+            outputDiv.innerHTML = 'Inserting test record...<br>';
+            try {
+                const userId = document.getElementById('user-email').value || 'test@example.com';
+                
+                const testData = {
+                    user_id: userId,
+                    deduction_name: 'Test Deduction',
+                    deduction_amount: 1000,
+                    annual_income: 50000,
+                    social_security_contributions: 2000,
+                    tax_credits: 500,
+                    calculation_date: new Date().toISOString(),
+                    tax_amount: 5000
+                };
+                
+                console.log('Sending test data:', testData);
+                const result = await saveTaxDeduction(testData);
+                console.log('Insert result:', result);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+        
+        document.getElementById('viewRecordsBtn').addEventListener('click', async () => {
+            outputDiv.innerHTML = 'Fetching records...<br>';
+            try {
+                const userId = document.getElementById('user-email').value || 'test@example.com';
+                const result = await getTaxDeductions(userId);
+                console.log('Records for user:', result);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+        
+        document.getElementById('clearButton').addEventListener('click', () => {
+            outputDiv.innerHTML = 'Output cleared.<br>';
+        });
+    </script>
+</body>
+</html>

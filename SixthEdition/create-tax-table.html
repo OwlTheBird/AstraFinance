@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Tax Deduction Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            min-height: 200px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Create Tax Deduction Table</h1>
+    <p>This page creates the tax_deduction table in your Supabase database.</p>
+    
+    <button id="createButton">Create Tax Deduction Table</button>
+    <button id="clearButton">Clear Output</button>
+    
+    <div id="output">Results will appear here...</div>
+    
+    <script type="module">
+        // Import the create table function
+        import { createTaxDeductionTable } from './create-tax-table.js';
+        
+        // Override console methods to output to our div
+        const outputDiv = document.getElementById('output');
+        outputDiv.textContent = '';
+        
+        const originalConsoleLog = console.log;
+        const originalConsoleError = console.error;
+        
+        console.log = function(...args) {
+            originalConsoleLog.apply(console, args);
+            outputDiv.textContent += args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg
+            ).join(' ') + '\n';
+        };
+        
+        console.error = function(...args) {
+            originalConsoleError.apply(console, args);
+            outputDiv.textContent += '❌ ERROR: ' + args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg
+            ).join(' ') + '\n';
+        };
+        
+        // Set up button click handlers
+        document.getElementById('createButton').addEventListener('click', async () => {
+            outputDiv.textContent = 'Creating table...\n';
+            try {
+                const success = await createTaxDeductionTable();
+                if (success) {
+                    console.log('Table creation successful!');
+                } else {
+                    console.log('Table creation failed. Check the errors above.');
+                }
+            } catch (error) {
+                console.error('Error creating table:', error);
+            }
+        });
+        
+        document.getElementById('clearButton').addEventListener('click', () => {
+            outputDiv.textContent = '';
+        });
+    </script>
+</body>
+</html>

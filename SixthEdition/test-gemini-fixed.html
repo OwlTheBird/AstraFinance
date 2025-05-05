@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini API Test (Fixed)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+        .loading {
+            display: none;
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+        .success {
+            color: green;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gemini API Test (Fixed)</h1>
+    
+    <div>
+        <h2>Test with gemini-1.0-pro</h2>
+        <button id="test1">Test with gemini-1.0-pro</button>
+        <div class="loading" id="loading1">Loading...</div>
+        <div class="error" id="error1"></div>
+        <div class="success" id="success1"></div>
+        <pre id="result1" class="result"></pre>
+    </div>
+    
+    <div style="margin-top: 40px;">
+        <h2>Test with gemini-pro</h2>
+        <button id="test2">Test with gemini-pro</button>
+        <div class="loading" id="loading2">Loading...</div>
+        <div class="error" id="error2"></div>
+        <div class="success" id="success2"></div>
+        <pre id="result2" class="result"></pre>
+    </div>
+    
+    <div style="margin-top: 40px;">
+        <h2>Test with v1beta API</h2>
+        <button id="test3">Test with v1beta API</button>
+        <div class="loading" id="loading3">Loading...</div>
+        <div class="error" id="error3"></div>
+        <div class="success" id="success3"></div>
+        <pre id="result3" class="result"></pre>
+    </div>
+    
+    <script>
+        // API Key
+        const GEMINI_API_KEY = 'AIzaSyAqDIBlCDBJ7M_npYvBrO2W_-XhjVNnajo';
+        
+        // Test with gemini-1.0-pro
+        document.getElementById('test1').addEventListener('click', async () => {
+            await testModel('gemini-1.0-pro', '1', 'v1');
+        });
+        
+        // Test with gemini-pro
+        document.getElementById('test2').addEventListener('click', async () => {
+            await testModel('gemini-pro', '2', 'v1');
+        });
+        
+        // Test with v1beta API
+        document.getElementById('test3').addEventListener('click', async () => {
+            await testModel('gemini-pro', '3', 'v1beta');
+        });
+        
+        async function testModel(modelName, id, apiVersion) {
+            const loadingEl = document.getElementById(`loading${id}`);
+            const errorEl = document.getElementById(`error${id}`);
+            const successEl = document.getElementById(`success${id}`);
+            const resultEl = document.getElementById(`result${id}`);
+            
+            loadingEl.style.display = 'block';
+            errorEl.textContent = '';
+            successEl.textContent = '';
+            resultEl.textContent = '';
+            
+            try {
+                const apiUrl = `https://generativelanguage.googleapis.com/${apiVersion}/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`;
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: "Hello, please respond with a simple greeting."
+                            }]
+                        }]
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error?.message || 'Unknown error');
+                }
+                
+                loadingEl.style.display = 'none';
+                successEl.textContent = `API call successful with ${modelName} on ${apiVersion}!`;
+                resultEl.textContent = JSON.stringify(data, null, 2);
+                
+            } catch (error) {
+                loadingEl.style.display = 'none';
+                errorEl.textContent = `Error: ${error.message}`;
+                console.error('API error:', error);
+            }
+        }
+    </script>
+</body>
+</html>
